@@ -3,6 +3,7 @@ Experiment 8: Multi-Agent System Web UI
 Serves an interactive web interface for Planner, Validator, and Worker agents.
 """
 from flask import Flask, request, jsonify, render_template_string
+import os
 from typing import TypedDict
 from langchain_ollama import ChatOllama
 from langgraph.graph import StateGraph, START, END
@@ -18,7 +19,8 @@ class AgentState(TypedDict):
     attempts: int
     result: str
 
-llm = ChatOllama(model="llama3.2:1b", temperature=0)
+ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
+llm = ChatOllama(model="llama3.2:1b", temperature=0, base_url=ollama_base_url)
 
 def planner_agent(state: AgentState):
     attempts = state.get("attempts", 0) + 1
