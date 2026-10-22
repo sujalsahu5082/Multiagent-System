@@ -219,6 +219,11 @@ def home():
 def run_agents():
     data = request.get_json() or {}
     task = data.get("task", "Explain how AI can help in healthcare.")
+
+    if os.getenv("VERCEL") and not os.getenv("OLLAMA_BASE_URL"):
+        return jsonify({
+            "error": "OLLAMA_BASE_URL is not configured. Add a public HTTPS Ollama server URL in Vercel project environment variables, then redeploy."
+        }), 503
     
     initial_state = {
         "query": task,
